@@ -4,7 +4,7 @@
     "start_url":".",
     "display": "standalone",
     "description":"Mi nueva PWA",
-    "icon":[{
+    "icons":[{
         "src":"icono2.png",
         "size":"144x144",
         "type":"image/png"
