@@ -1,7 +1,7 @@
 const lista=document.querySelector('#lista');
 
 window.addEventListener('load', ()=>{
-    registersq();
+    registersw();
 });
 
 fetch('https://jsonplaceholder.typicode.com/users').then(response => response.json()).then(data => {

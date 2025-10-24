@@ -6,7 +6,7 @@ const staticAssets = [
     "./index.html",
     "./manifest.webmanifest",
     "./app.css",
-    "./app.js"
+    "./app.js",
 ];
 
 self.addEventListener("install", async e =>{
@@ -19,19 +19,39 @@ self.addEventListener("activate", e =>{
     self.clients.claim();
 });
 
-self.addEventListener("fetch", async e=>{
+self.addEventListener("fetch", async e =>{
     const req = e.request;
     const url = new URL(req.url);
     
-    if(url.origin == location.origin){
-        const res = e.request;
+    if(url.origin === location.origin){
+        const req = e.request;
         const url = new URL(req.url);
 
         if(url.origin == location.origin){
             e.respondWith(cachefirst(req));
         }
         else{
-            //Falta esto
+            e.respondWith(networkAndCache(req));
         }
     }
 });
+
+async function cachefirst(req){
+    const cache = await caches.open(cacheName);
+    const cached = await cache.match(req);
+
+    return cached || fetch(req);
+};
+
+async function networkAndCache(req){
+    const cache = await caches.open(cacheName);
+    try{
+        const fresh = await fetch(req);
+        await cache.put(req, fresh.clone());
+        return fresh;
+    }
+    catch(e){
+        const cached = await cache.match(req);
+        return cached;
+    }
+};
